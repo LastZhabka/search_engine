@@ -45,7 +45,7 @@ class SemanticIndexStorage:
             print(f"Index might already exist: {e}")
     
     def insertDocument(self, document, url):
-        self.indexes.insert_one({"url": url}, {"$set" : document}, upsert = True)
+        self.indexes.insert_one(document)
     
     def search(self, searchSpace = None):
         if searchSpace == None:

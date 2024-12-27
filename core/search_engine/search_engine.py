@@ -16,7 +16,7 @@ class SearchEngine:
 
 
 x = SearchEngine()
-"""
+#x.crawler.crawl_url("http://publications.ust.hk/Annual_Report/2008-2009/annual_report_0809.pdf")
 SearchEngine().start_crawling()
-"""
-x.get("Data Science Major, DSCT Major requirements")
+
+#x.get("Data Science Major, DSCT Major")
