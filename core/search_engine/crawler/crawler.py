@@ -42,3 +42,4 @@ class WebCrawler:
         while not self.unprocessedURLs.is_empty():
             url = self.unprocessedURLs.get_url()['url']
             self.crawl_url(url)
+            print(f"Crawled url : {url}")
