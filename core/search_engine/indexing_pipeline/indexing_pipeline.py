@@ -4,7 +4,7 @@ from core.search_engine.indexing_pipeline.indexer.indexer import SemanticIndexer
 from core.search_engine.indexing_pipeline.tokenizer.tokenizer import TextBatchTokenizer, WordTokenizer
 from utilities.TextRetriever import TextRetriever
 
-
+import time
 
 class IndexingPipeline:
     def __init__(self,):

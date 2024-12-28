@@ -28,8 +28,10 @@ class SemanticIndexer(Indexer):
     
     def insertDocument(self, document, url):
         documentEmbeddings = self.model.encode(document)
-        for embedding in documentEmbeddings:
-            self.indexStorage.insertDocument(document = {'url': url, 'embedding': embedding.tolist(), "timestamp": datetime.now()}, url=url)
+        self.indexStorage.insertDocument(embedding = documentEmbeddings.tolist(), url=url)
+
+        #for embedding in documentEmbeddings:
+        #    self.indexStorage.insertDocument(document = {'url': url, 'embedding': embedding.tolist(), "timestamp": datetime.now()}, url=url)
 
     def searchDocument(self, documentInfo, searchSpace=None, topK = 100):
         queryEmbedding = self.model.encode(documentInfo)[0]
@@ -38,8 +40,9 @@ class SemanticIndexer(Indexer):
         for candidate in candidateDocuments:
             if searchSpace != None and (not candidate['url'] in searchSpace):
                 raise RuntimeError("Doc that is not present in searchSpace")
-            candidateEmbedding = np.array(candidate["embedding"])
-            similarity = np.dot(queryEmbedding, candidateEmbedding)/ (np.linalg.norm(queryEmbedding) * np.linalg.norm(candidateEmbedding))
+            candidateEmbeddings = np.array(candidate["embedding"]) # shape (|Chunks|, 343)
+            embSimiliarities = np.dot(candidateEmbeddings, queryEmbedding) / (np.linalg.norm(queryEmbedding) * np.linalg.norm(candidateEmbeddings, axis = 1))
+            similarity = np.max(embSimiliarities)
             similarities[0] = (similarity, candidate['url'])
             similarities.sort(key = lambda _ : _[0])
         documents = []
@@ -54,8 +57,10 @@ class WordIndexer(Indexer):
         self.indexStorage = InvertedIndexStorage()
     
     def insertDocument(self, document, url):
-        for word in document:
-            self.indexStorage.addDocument(word, url)
+        if len(document) == 0:
+            return
+        # document - list of words
+        self.indexStorage.insertDocuments(document, url)
 
     def searchDocument(self, documentInfo, searchSpace = None, topK = 50):
         docs = defaultdict(int)

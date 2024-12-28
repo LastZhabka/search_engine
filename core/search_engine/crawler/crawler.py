@@ -40,6 +40,7 @@ class WebCrawler:
         
     def start_crawling(self, ):
         while not self.unprocessedURLs.is_empty():
+            t0 = time.time()
             url = self.unprocessedURLs.get_url()['url']
             self.crawl_url(url)
-            print(f"Crawled url : {url}")
+            print(f"Crawled url : {url}, {time.time() - t0}")

@@ -1,9 +1,7 @@
-from pymongo import MongoClient
+from pymongo import MongoClient, UpdateOne, InsertOne
 from bson.objectid import ObjectId
-import numpy as np
-from numpy.linalg import norm
-
-
+from datetime import datetime
+import time
 
 class InvertedIndexStorage:
     def __init__(self,):
@@ -17,19 +15,26 @@ class InvertedIndexStorage:
             self.rev_indexes.create_index("word")
         except Exception as e:
             print(f"Index might already exist: {e}")    
-
+    
+    """
+    v1.0
     def addDocument(self, word, url):
         self.rev_indexes.update_one(
             {'word' : word},
             {'$push' : {'urls' : url}},
             upsert=True
         )
+    """
+
+    def insertDocuments(self, words, url):
+        operations = [InsertOne({'word' : word, 'url' : url, "timestamp": datetime.now()}) for word in words]
+        self.rev_indexes.bulk_write(operations)
 
     def getDocuments(self, word):
-        doc_list = self.rev_indexes.find_one({'word' : word})
+        doc_list = list(self.rev_indexes.find({'word' : word}))
         if doc_list == None:
             return []
-        return self.rev_indexes.find_one({'word' : word})['urls']    
+        return [doc['url'] for doc in doc_list]
 
 class SemanticIndexStorage:
     def __init__(self, ):
@@ -44,8 +49,8 @@ class SemanticIndexStorage:
         except Exception as e:
             print(f"Index might already exist: {e}")
     
-    def insertDocument(self, document, url):
-        self.indexes.insert_one(document)
+    def insertDocument(self, embedding, url):
+        self.indexes.insert_one({'url': url, 'embedding': embedding, "timestamp": datetime.now()})
     
     def search(self, searchSpace = None):
         if searchSpace == None:
