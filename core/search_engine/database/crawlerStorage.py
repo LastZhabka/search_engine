@@ -46,6 +46,13 @@ class  URLStorage:
     def __init__(self,):
         client = MongoClient('mongodb://localhost:27017/')
         self.visited_urls = client['search_engine']['visited_urls']
+        self.createIndex()
+
+    def createIndex(self,):
+        try:
+            self.visited_urls.create_index("url")
+        except Exception as e:
+            print(f"Index might already exist: {e}")
 
     def add_url(self, url):
         if self.is_visited(url):
@@ -60,7 +67,14 @@ class  URLStorage:
 class URLsGraph:
     def __init__(self,):
         client = MongoClient('mongodb://localhost:27017/')
-        self.urls_graph = client['search_engine']['urls_graph']     
+        self.urls_graph = client['search_engine']['urls_graph']
+        self.createIndex()
+
+    def createIndex(self,):
+        try:
+            self.urls_graph.create_index("url")
+        except Exception as e:
+            print(f"Index might already exist: {e}")
 
     def connect_urls(self, url_1, url_2):
         self.urls_graph.update_one(

@@ -5,6 +5,8 @@ sys.path.append(os.getcwd())
 from core.search_engine.database.crawlerStorage import URLQueue, URLsGraph, URLStorage, Logger
 from utilities.URLProcessor import URLProcessor
 import time
+import asyncio
+import aiohttp
 
 class WebCrawler:
     def __init__(self, indexingCallback):
@@ -16,7 +18,7 @@ class WebCrawler:
 
         self.urlProcessor = URLProcessor() # utility
 
-    def propagate_from_url(self, url, links):
+    async def propagate_from_url(self, url, links):
         for link in links:
             next_url = self.urlProcessor.joinURLs(url, link.get("href"))
             if len(next_url) > 0:
@@ -26,21 +28,30 @@ class WebCrawler:
                 self.urls.add_url(next_url)
                 self.unprocessedURLs.push_url(next_url)
 
-    def crawl_url(self, url):
+    async def asyncIndexingCallbackWrapper(self, responseContent, format, url):
+        self.indexingCallback(responseContent = responseContent, format = format, url = url)
+
+    async def crawl_url(self, url):
         try:
-            response = requests.get(url)
+            async with aiohttp.ClientSession() as session:
+                response = await session.get(url)
+                content = await response.content.read()
         except:
             return
         response_type = self.urlProcessor.getResponseType(response)
         if response_type == 'html' or response_type == 'pdf':
-            self.indexingCallback(responseContent=response.content, format=response_type, url=url)
+            task = asyncio.create_task(self.asyncIndexingCallbackWrapper(content, response_type, url))
+            if response_type == "pdf":
+                await task
+
         if response_type == 'html':
-            soup = BeautifulSoup(response.content, "html.parser")
-            self.propagate_from_url(url, soup.find_all('a'))
+            soup = BeautifulSoup(content, "html.parser")
+            await self.propagate_from_url(url, soup.find_all('a'))
+
         
-    def start_crawling(self, ):
+    async def start_crawling(self, ):
         while not self.unprocessedURLs.is_empty():
             t0 = time.time()
             url = self.unprocessedURLs.get_url()['url']
-            self.crawl_url(url)
+            await self.crawl_url(url)
             print(f"Crawled url : {url}, {time.time() - t0}")
