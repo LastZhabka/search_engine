@@ -1,5 +1,5 @@
 from nltk.tokenize import sent_tokenize, word_tokenize 
-
+from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
 from abc import ABC, abstractmethod
 from functools import reduce
@@ -18,11 +18,12 @@ class Tokenizer(ABC):
 
 class WordTokenizer(Tokenizer):
     def __init__(self, ):
-        self.english_stopwords = set(stopwords.words('english'))
-        self.extra_stopchars = r'[&^%$#@!*()_+\-=\[\]{};:"\\|,.<>\/?]'
+        self.porterStemmer = PorterStemmer()
+        self.englishStopwords = set(stopwords.words('english'))
+        self.extraStopchars = r'[&^%$#@!*()_+\-=\[\]{};:"\\|,.<>\/?]'
     
     def isValid(self, word):
-        if word in self.extra_stopchars or word in self.extra_stopchars:
+        if word in self.extraStopchars or word in self.englishStopwords:
             return False
         for char in word:
             if '\u4e00' <= char <= '\u9fff': #chinese symbols
@@ -33,6 +34,7 @@ class WordTokenizer(Tokenizer):
         words = []
         for subtext in text:
             words = words + list(filter(self.isValid, word_tokenize(subtext.lower())))
+        words = [self.porterStemmer.stem(word) for word in words] # add stemming
         return words
 
 class TextBatchTokenizer(Tokenizer):

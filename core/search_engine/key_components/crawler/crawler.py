@@ -15,7 +15,7 @@ class WebCrawler:
         self.urls = URLStorage()
         self.logger = Logger()
         self.indexingCallback = indexingCallback
-
+        self.debt = 0
         self.urlProcessor = URLProcessor() # utility
 
     async def propagate_from_url(self, url, links):
@@ -30,6 +30,7 @@ class WebCrawler:
 
     async def asyncIndexingCallbackWrapper(self, responseContent, format, url):
         self.indexingCallback(responseContent = responseContent, format = format, url = url)
+        self.debt -= 1
 
     async def crawl_url(self, url):
         try:
@@ -40,6 +41,7 @@ class WebCrawler:
             return
         response_type = self.urlProcessor.getResponseType(response)
         if response_type == 'html' or response_type == 'pdf':
+            self.debt += 1
             task = asyncio.create_task(self.asyncIndexingCallbackWrapper(content, response_type, url))
             if response_type == "pdf":
                 await task
@@ -54,4 +56,4 @@ class WebCrawler:
             t0 = time.time()
             url = self.unprocessedURLs.get_url()['url']
             await self.crawl_url(url)
-            print(f"Crawled url : {url}, {time.time() - t0}")
+            print(f"Crawled url : {url}, {time.time() - t0}, debt : {self.debt}")
