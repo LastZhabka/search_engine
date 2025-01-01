@@ -37,9 +37,9 @@ class WebCrawler:
             async with aiohttp.ClientSession() as session:
                 response = await session.get(url)
                 content = await response.content.read()
+            response_type = self.urlProcessor.getResponseType(response)
         except:
             return
-        response_type = self.urlProcessor.getResponseType(response)
         if response_type == 'html' or response_type == 'pdf':
             self.debt += 1
             task = asyncio.create_task(self.asyncIndexingCallbackWrapper(content, response_type, url))

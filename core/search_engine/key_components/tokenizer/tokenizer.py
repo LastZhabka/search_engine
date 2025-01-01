@@ -28,6 +28,8 @@ class WordTokenizer(Tokenizer):
         for char in word:
             if '\u4e00' <= char <= '\u9fff': #chinese symbols
                 return False
+            if '\uD800' <= char <= '\uDFFF':
+                return False
         return True
 
     def getTokens(self, text):

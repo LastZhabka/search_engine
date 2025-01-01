@@ -21,13 +21,14 @@ class SearchEngine:
 x = SearchEngine()
 #x.crawler.urls.add_url("https://prog-crs.hkust.edu.hk/ugprog/2024-25/COMP")
 #x.crawler.unprocessedURLs.push_url("https://prog-crs.hkust.edu.hk/ugprog/2024-25/COMP")
-#SearchEngine().start_crawling()
+SearchEngine().start_crawling()
 #asyncio.run(x.crawler.crawl_url("http://publications.ust.hk/Annual_Report/2008-2009/annual_report_0809.pdf"))
 #SearchEngine().start_crawling()
 
-
+"""
 import time
 
 t0 = time.time()
 x.get("ICPC")
 print(time.time() - t0)
+"""
