@@ -29,7 +29,10 @@ class WebCrawler:
                 self.unprocessedURLs.push_url(next_url)
 
     async def asyncIndexingCallbackWrapper(self, responseContent, format, url):
-        self.indexingCallback(responseContent = responseContent, format = format, url = url)
+        try:
+            self.indexingCallback(responseContent = responseContent, format = format, url = url)
+        except Exception as e:
+            self.logger.add_info(f"During handling {url}, error: {str(e)}")
         self.debt -= 1
 
     async def crawl_url(self, url):

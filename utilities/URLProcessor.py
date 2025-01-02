@@ -15,7 +15,11 @@ class URLProcessor:
         return url
 
     def isIncorrectURL(self, url):
-        if ('.jpg' in url) or ('.png' in url) or ('.JPG' in url) or ('.PNG' in url) or (not (".hk" in url)) or (not ("ust" in url)) or (not url.startswith("http")):
+        if ('.jpg' in url) or ('.png' in url) or ('.JPG' in url) or ('.PNG' in url):
+            return True
+        if ('.zip' in url) or ('.pptx' in url) or ('.mp4' in url) or ('.mp3' in url):
+            return True
+        if (not (".hk" in url)) or (not ("ust" in url)) or (not url.startswith("http")):
             return True
         if ("news" in url) or ("download" in url):
             return True
