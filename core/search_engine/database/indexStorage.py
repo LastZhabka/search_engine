@@ -27,14 +27,16 @@ class InvertedIndexStorage:
     """
 
     def insertDocuments(self, words, url):
-        operations = [InsertOne({'word' : word, 'url' : url, "timestamp": datetime.now()}) for word in words]
+        operations = [
+            InsertOne({'word' : word, 'url' : url, 'freq' : freq, "timestamp": datetime.now()}) for word, freq in words.items()
+        ]
         self.rev_indexes.bulk_write(operations)
 
     def getDocuments(self, word):
         doc_list = list(self.rev_indexes.find({'word' : word}))
         if doc_list == None:
             return []
-        return [doc['url'] for doc in doc_list]
+        return [(doc['url'], doc['freq']) for doc in doc_list]
 
 class SemanticIndexStorage:
     def __init__(self, ):

@@ -1,11 +1,11 @@
 from sentence_transformers import SentenceTransformer
 import sys, os
 sys.path.append(os.getcwd())
-from core.search_engine.database.indexerStorage import SemanticIndexStorage, InvertedIndexStorage
+from core.search_engine.database.indexStorage import SemanticIndexStorage, InvertedIndexStorage
 import numpy as np
 from datetime import datetime
 from abc import ABC, abstractmethod
-from collections import defaultdict
+from collections import defaultdict, Counter
 from functools import reduce
 
 class Indexer(ABC):
@@ -60,16 +60,15 @@ class WordIndexer(Indexer):
     def insertDocument(self, document, url):
         if len(document) == 0:
             return
-        self.indexStorage.insertDocuments(document + self.buildNGram(document, 2) + self.buildNGram(document, 3), url)
+        words = Counter(document + self.buildNGram(document, 2) + self.buildNGram(document, 3))
+        vocabulary = words.keys()
+        self.indexStorage.insertDocuments(words, url)
 
     def searchDocument(self, documentInfo, searchSpace = None, topK = 50):
         docs = defaultdict(int)        
-        for k in range(1, 4):    
-            for word in self.buildNGram(documentInfo, k):
-                print(word)
-                temp = defaultdict(int)
-                for doc in self.indexStorage.getDocuments(word):
-                    temp[doc] += 1
-                    docs[doc] += np.power(2 - k * 0.4, -float(temp[doc]))
+        for k in range(1, 4):
+            for word in Counter(self.buildNGram(documentInfo, k)).keys():
+                for url, frequency in self.indexStorage.getDocuments(word):
+                    docs[url] += 1 - np.power(8.0, -frequency)
         return [item[0] for item in sorted(docs.items(), key = lambda x: x[1], reverse=True)[0:topK]]
     

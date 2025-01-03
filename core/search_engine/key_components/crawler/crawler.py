@@ -36,6 +36,7 @@ class WebCrawler:
         self.debt -= 1
 
     async def crawl_url(self, url):
+        time0 = time.time()
         try:
             async with aiohttp.ClientSession() as session:
                 response = await session.get(url)
@@ -43,10 +44,11 @@ class WebCrawler:
             response_type = self.urlProcessor.getResponseType(response)
         except:
             return
+        print(f"Request time : {time.time() - time0} ", end = " | ")
         if response_type == 'html' or response_type == 'pdf':
-            self.debt += 1
+            self.debt += 1 # make self.debt atomic in c++
             task = asyncio.create_task(self.asyncIndexingCallbackWrapper(content, response_type, url))
-            if response_type == "pdf":
+            if self.debt > 10:
                 await task
 
         if response_type == 'html':
