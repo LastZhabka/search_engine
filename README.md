@@ -4,6 +4,9 @@ TODO Project Description.
 
 ## 📰 News
 
+- **[2024.01.05]** The second implementation released.
+  [[Technical Report]](docs/report_02.md)
+
 - **[2024.12.27]** The first implementation released.
   [[Technical Report]](docs/report_01.md)
 
