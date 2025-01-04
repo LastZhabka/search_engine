@@ -8,23 +8,21 @@ This report describes the improvements and changes made to the search engine imp
 
 ### Crawler
 
-One of the non-mentioned challenges in the technical report was the incorrect webpages with broken pdf files or webpages with incorrect content, to handle that the search engine now catches all errors from indexing pipeline and logs the error messages without interrupting the crawling process overall, because otherwise it will require the manual restarting of the crawling process of the search engine.
-
-To improve the systems performance now instead of directly calling the indexing pipeline callback, crawler creates asynchronous task to index the content of webpages and utilizes response waiting time to index the content of the webpage. Since the network speed is much slower than indexing speed every webpage will be succesuflly indexed, but for safety if the number of not completed tasks is higher than predefined threshold the crawler enforce task waiting. 
+One of the not mentioned challenges  in the technical report was the presence of webpages with broken PDF files or incorrect content. To address this, the search engine now catches all errors from the indexing pipeline and logs the error messages without interrupting the overall crawling process. This prevents the need for manual restarting of the crawling process. Also to improve system performance, the crawler now creates an asynchronous task to index the content of webpages, utilizing the response waiting time to index the webpage content. Since the network speed is typically slower than the indexing speed, this ensures that every webpage will be successfully indexed. However, as a safety measure, if the number of incomplete tasks exceeds a predefined threshold, the crawler enforces task waiting.
 
 ### Tokenizers and Indexes
 
 Most of the changes in the tokenization and indexing process are related to improvements in the search algorithm, and mostly changes have been made to the first tokenizer and index pair to maintain an inverted index.
 
-1. Stemming process now included in tokenization, to imporve searching algorithm. So basically it was musthave part for the search engine, because obviously the same words with different ends have the same meaning and must be calculated in the initial score.
+1. The stemming process is now included in the tokenization, to improve the searching algorithm. This was a necessary part for the search engine, because obviously the same words with different endings have the same meaning and must be calculated in the initial score.
 
-2. 2-grams and 3-grams(over words) now also included in the working dictionary. Such technique allows to handle cases where not only words in phrase are important, but the phrase itself is important. For example "Data Science", before we had search over "data" and "science" words, but webpage can contain something like "Data Analytics ... Life Science", and the information will be not that important.
+2. 2-grams and 3-grams (over words) are now also included in the working dictionary. Such a technique allows handling cases where not only the individual words in a phrase are important, but the phrase itself is important. For example, "Data Science" - before, had searches over the individual words "data" and "science", but a webpage could contain something like "Data Analytics ... Life Science", and the information would not be as relevant.
 
-3. The scoring formula have been changed to make the score calculation more efficient, that modification is connected with change in the inverted index storing that will be described later. Now we use something like that:
+3. The scoring formula has been changed to make the score calculation more efficient, and this modification is connected with a change in the inverted index storing that will be described later. Now something like this is used:
 
 $$\text{Score}(\text{document}) = \sum\limits_{\text{keyword} \in \text{T}} \sum\limits_{k = 0}^{C(KW, D) - 1} \frac{7}{8} \cdot \frac{1}{8^k} = \sum\limits_{\text{keyword} \in \text{T}} \left(1 - \frac{1}{8^\text{C(KW, D)}}\right)$$
 
-The other changes in indexes and tokenizers are not important, but here I also want to clarify one thing that wasn't described before. Why do we need to use semantic index instead of something classcial method? So the main reason that the main use case of the currently written search engine is to retrieve information from the webpages and get the documents for the Retrieval-Augmented Generation, so the search queries will be not standard queries as in Google, they'll be way longer, to handle long queries I need something that can capture the main semantic meaning and identify useful documents for further work. But that method has strong drawback, the storage usage can be compressed since we're storing a bunch of vectors and can't compress this type of data.
+The other changes in indexes and tokenizers are not important, but it necessary to clarify one thing that wasn't described before. Why is a semantic index needed instead of a more classical method? The main reason is that the primary use case of the currently written search engine is to retrieve information from webpages and get the documents for Retrieval-Augmented Generation. The search queries will be much longer than standard queries, so engine needs index that can capture the main semantic meaning and identify useful documents for further work. However, this method has a drawback: the storage usage can be more compressed since a bunch of vectors are stored, and this type of data is not easily compressible.
 
 ### Database
 
@@ -39,3 +37,17 @@ Also to improve the performance of the system, instead of sending individual que
 The time usage initially required the search engine to spend 22.5 hours to index 8900 web pages. After optimizing the database, the time was reduced to 4.5 hours for the same number of web pages. Introducing asynchronous pipeline code further reduced the time to 2.25 hours.  Potential improvements could bring the time down to 1-1.5 hour, but further optimization is limited due to network speed. 
 
 Becaues of that the logical question arises, whether rewriting the code is necessary if Python can index all web pages within the total request waiting time, implementation on other languages cannot improve the network speed. But atleast the perfomrance for the search queries also need to be considered, and Python is too slow to handle them fastly, so rewriting the code to C++ could be beneficial.
+
+## Implementation details
+
+The previous report neglected to include implementation details. The implementation is designed to be modular and extensible. Different indexing and tokenization strategies can be easily integrated into system using the abstract Indexer and Tokenizer classes. The indexing pipeline is set up as a callback that gets called for each web page that is crawled and inserted into the database. The crawler itself is implemented asynchronously to make efficient use of request wait times, in other details the core crawler logic is relatively straightforward. The database module currently uses a simple unstructured approach, with separate classes for each required database collection. This may be improved in the future to provide a more structured data model. Overall, the goal has been to make the codebase flexible and easy to extend, while keeping the core implementation as simple and lightweight as possible.
+
+## Future Plans and Challenges
+
+The improved second implementation of the search engine boasts a significant speed boost with a 10x improvement. This enhanced performance is enough for indexing a smaller web space comprising around 500000 pages and conducting searches over it. Current objectives entail constructing an evaluation pipeline to measure search quality and performance, establishing configurations, and crafting a simple README file. All previously proposed ideas and plans are still relevant.
+
+However, several challenges have popped up:
+
+1. Adapting the code to C++. It remains uncertain whether transitioning the MiniLM model usage to C++ code is doable.
+
+2. The code is strongly linked to particular databases, resulting in nearly identical instances of the indexer, crawler, and tokenizer due to their connection to the same databases. How to handle such implementation problem?
