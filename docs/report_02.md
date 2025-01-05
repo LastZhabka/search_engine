@@ -20,11 +20,16 @@ Most of the changes in the tokenization and indexing process are related to impr
 
 3. The scoring formula has been changed to wf-idf(weighted frequency - inverse document frequence) which is commonly used scoring formula in information retrieval, where N is the total number of documents, $df_t$ the frequency of word $t$ in documents, $d$ is target document:
 
-$$ \text{idf}_{t} = \log\left(\frac{N}{\text{df}_{t}}\right)$$
+$$ \text{idf}\_{t} = \log\left(\frac{N}{\text{df}_{t}}\right)$$
 
-$$ \text{wf}_{d, t} = \left\{\begin{array}{c}1 + \log\left(\text{tf}_{d, t}\right)\text{ if tf}_{d, t} > 0 \\ 0 \hspace*{1.9cm}\text{ otherwise} \end{array}\right.$$
+$$
+\text{wf}\_{d, t} = \begin{cases}
+1 + \log\left(\text{tf}\_{d, t}\right) & \text{if tf}\_{d, t} > 0 \\
+0 & \text{otherwise}
+\end{cases}
+$$
 
-$$\text{Score}(\text{d}) = \sum\limits_{\text{t} \in \text{T}} \text{idf}_{t} \cdot \text{wf}_{d, t}$$
+$$\text{Score}(\text{d}) = \sum\limits_{\text{t} \in \text{T}} \text{idf}\_{t} \cdot \text{wf}_{d, t}$$
 
 The other changes in indexes and tokenizers are not important, but it necessary to clarify one thing that wasn't described before. Why is a semantic index needed instead of a more classical method? The main reason is that the primary use case of the currently written search engine is to retrieve information from webpages and get the documents for Retrieval-Augmented Generation. The search queries will be much longer than standard queries, so engine needs index that can capture the main semantic meaning and identify useful documents for further work. However, this method has a drawback: the storage usage can be more compressed since a bunch of vectors are stored, and this type of data is not easily compressible.
 
