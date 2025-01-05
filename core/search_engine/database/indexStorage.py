@@ -45,6 +45,9 @@ class SemanticIndexStorage:
         self.indexes = database["semantic_index"]
         self.createIndex()
 
+    def getSize(self,) :
+        return self.indexes.estimated_document_count()
+
     def createIndex(self,):
         try:
             self.indexes.create_index("url")

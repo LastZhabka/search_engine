@@ -19,7 +19,7 @@ class Indexer(ABC):
         pass
     
     @abstractmethod
-    def searchDocument(self, documentInfo, searchSpace = None, topK = 50):
+    def searchDocument(self, documentInfo, searchSpace = None, topK = 50, docsCount = 0):
         pass
 
 class SemanticIndexer(Indexer):
@@ -31,7 +31,7 @@ class SemanticIndexer(Indexer):
         documentEmbeddings = self.model.encode(document)
         self.indexStorage.insertDocument(embedding = documentEmbeddings.tolist(), url=url)
 
-    def searchDocument(self, documentInfo, searchSpace=None, topK = 100):
+    def searchDocument(self, documentInfo, searchSpace=None, topK = 100, docsCount = 0):
         queryEmbedding = self.model.encode(documentInfo)[0]
         candidateDocuments = self.indexStorage.search(searchSpace)        
         similarities = [(-1, "") for _ in range(topK)]
@@ -64,11 +64,16 @@ class WordIndexer(Indexer):
         vocabulary = words.keys()
         self.indexStorage.insertDocuments(words, url)
 
-    def searchDocument(self, documentInfo, searchSpace = None, topK = 50):
+    def searchDocument(self, documentInfo, searchSpace = None, topK = 50, docsCount = 0):
         docs = defaultdict(int)        
         for k in range(1, 4):
             for word in Counter(self.buildNGram(documentInfo, k)).keys():
-                for url, frequency in self.indexStorage.getDocuments(word):
-                    docs[url] += 1 - np.power(8.0, -frequency)
+                docs_with_word = self.indexStorage.getDocuments(word)
+                if len(docs_with_word) == 0:
+                    continue
+                wordIDF = np.log(docsCount  / (len(docs_with_word) + 0.0))
+                for url, frequency in docs_with_word:
+                    docs[url] += wordIDF * (1 + np.log(frequency))
+                    #docs[url] += 1 - np.power(8.0, -frequency)
         return [item[0] for item in sorted(docs.items(), key = lambda x: x[1], reverse=True)[0:topK]]
     

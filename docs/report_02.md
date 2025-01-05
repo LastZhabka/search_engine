@@ -18,9 +18,13 @@ Most of the changes in the tokenization and indexing process are related to impr
 
 2. 2-grams and 3-grams (over words) are now also included in the working dictionary. Such a technique allows handling cases where not only the individual words in a phrase are important, but the phrase itself is important. For example, "Data Science" - before, had searches over the individual words "data" and "science", but a webpage could contain something like "Data Analytics ... Life Science", and the information would not be as relevant.
 
-3. The scoring formula has been changed to make the score calculation more efficient, and this modification is connected with a change in the inverted index storing that will be described later. Now something like this is used:
+3. The scoring formula has been changed to wf-idf(weighted frequency - inverse document frequence) which is commonly used scoring formula in information retrieval, where N is the total number of documents, $df_t$ the frequency of word $t$ in documents, $d$ is target document:
 
-$$\text{Score}(\text{document}) = \sum\limits_{\text{keyword} \in \text{T}} \sum\limits_{k = 0}^{C(KW, D) - 1} \frac{7}{8} \cdot \frac{1}{8^k} = \sum\limits_{\text{keyword} \in \text{T}} \left(1 - \frac{1}{8^\text{C(KW, D)}}\right)$$
+$$ \text{idf}_{t} = \log\left(\frac{N}{\text{df}_{t}}\right)$$
+
+$$ \text{wf}_{d, t} = \left\{\begin{array}{c}1 + \log\left(\text{tf}_{d, t}\right)\text{ if tf}_{d, t} > 0 \\ 0 \hspace*{1.9cm}\text{ otherwise} \end{array}\right.$$
+
+$$\text{Score}(\text{d}) = \sum\limits_{\text{t} \in \text{T}} \text{idf}_{t} \cdot \text{wf}_{d, t}$$
 
 The other changes in indexes and tokenizers are not important, but it necessary to clarify one thing that wasn't described before. Why is a semantic index needed instead of a more classical method? The main reason is that the primary use case of the currently written search engine is to retrieve information from webpages and get the documents for Retrieval-Augmented Generation. The search queries will be much longer than standard queries, so engine needs index that can capture the main semantic meaning and identify useful documents for further work. However, this method has a drawback: the storage usage can be more compressed since a bunch of vectors are stored, and this type of data is not easily compressible.
 

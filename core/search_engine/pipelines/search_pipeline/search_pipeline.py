@@ -12,7 +12,8 @@ class SearchPipeline:
 
     def searchDocument(self, queryText, topK = 20):
         searchSpace = None
+        docsCount = self.indexers[1].indexStorage.getSize()
         for layer in range(2):
             tokens = self.tokenizers[layer].getTokens([queryText])
-            searchSpace = self.indexers[layer].searchDocument(tokens, searchSpace, (20 if layer == 1 else 100))
+            searchSpace = self.indexers[layer].searchDocument(tokens, searchSpace, (20 if layer == 1 else 100), docsCount)
         return searchSpace
