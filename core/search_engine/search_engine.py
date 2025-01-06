@@ -25,10 +25,10 @@ x = SearchEngine()
 #asyncio.run(x.crawler.crawl_url("http://publications.ust.hk/Annual_Report/2008-2009/annual_report_0809.pdf"))
 #SearchEngine().start_crawling()
 
-"""
+
 import time
 
 t0 = time.time()
-x.get("kek")
+x.get("Hi, I want to know Data Science Major requirements, DSCT ?")
 print(time.time() - t0)
-"""
+

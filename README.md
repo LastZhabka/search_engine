@@ -1,6 +1,6 @@
-## Simple Search Engine
+## Web Search Engine for Retrieval-Augmented Generation
 
-TODO Project Description.
+This project aims to develop a scalable and efficient web search engine to support Retrieval-Augmented Generation (RAG) systems. The search engine is designed with a modular architecture that allows for easy integration of different indexing and tokenization strategies. Currently it has undergone significant performance optimizations, achieving a 10x speed boost in the indexing process.
 
 ## 📰 News
 
