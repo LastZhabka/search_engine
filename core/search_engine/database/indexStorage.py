@@ -54,11 +54,11 @@ class SemanticIndexStorage:
         except Exception as e:
             print(f"Index might already exist: {e}")
     
-    def insertDocument(self, embedding, url):
-        self.indexes.insert_one({'url': url, 'embedding': embedding, "timestamp": datetime.now()})
+    def insertDocument(self, embedding, url, text):
+        self.indexes.insert_one({'url': url, 'embedding': embedding, "text": text, "timestamp": datetime.now()})
     
     def search(self, searchSpace = None):
         if searchSpace == None:
-            return list(self.indexes.find({}, {"_id": 1, "url": 1, "embedding": 1}))
+            return list(self.indexes.find({}))
         else:
             return list(self.indexes.find({'url' : {'$in' : searchSpace}}))

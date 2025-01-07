@@ -29,26 +29,28 @@ class SemanticIndexer(Indexer):
     
     def insertDocument(self, document, url):
         documentEmbeddings = self.model.encode(document)
-        self.indexStorage.insertDocument(embedding = documentEmbeddings.tolist(), url=url)
+        self.indexStorage.insertDocument(embedding = documentEmbeddings.tolist(), url=url, text=document)
 
     def searchDocument(self, documentInfo, searchSpace=None, topK = 100, docsCount = 0):
         queryEmbedding = self.model.encode(documentInfo)[0]
         candidateDocuments = self.indexStorage.search(searchSpace)        
-        similarities = [(-1, "") for _ in range(topK)]
+        similarities = [(-1, "", None, None) for _ in range(topK)]
         for candidate in candidateDocuments:
             if searchSpace != None and (not candidate['url'] in searchSpace):
                 raise RuntimeError("Doc is not in the searchSpace")
             candidateEmbeddings = np.array(candidate["embedding"]) # shape (|Chunks|, 343)
             embSimiliarities = np.dot(candidateEmbeddings, queryEmbedding) / (np.linalg.norm(queryEmbedding) * np.linalg.norm(candidateEmbeddings, axis = 1))
             similarity = np.max(embSimiliarities)
-            similarities[0] = (similarity, candidate['url'])
+            similarities[0] = (similarity, candidate['url'], candidateEmbeddings, candidate["text"])
             similarities.sort(key = lambda _ : _[0])
-        documents = []
-        for score, url in reversed(similarities):
+        urls, embeddings, texts = [], [], []
+        for score, url, embedding, text in reversed(similarities):
             if score == -1:
                 break
-            documents.append(url)
-        return documents
+            urls.append(url)
+            embeddings.append(embedding)
+            texts.append(text)
+        return urls, embeddings, texts
 
 class WordIndexer(Indexer):
     def __init__(self,):
