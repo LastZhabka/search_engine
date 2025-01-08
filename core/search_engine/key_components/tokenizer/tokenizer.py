@@ -40,7 +40,7 @@ class WordTokenizer(Tokenizer):
         return words
 
 class TextBatchTokenizer(Tokenizer):
-    def __init__(self, batchSize = 350):
+    def __init__(self, batchSize = 1000):
         self.batchSize = batchSize
     
     def getTokens(self, text):

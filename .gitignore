@@ -1,2 +1,3 @@
 tests/
 __pycache__/
+core/rag_pipeline/llm_connector/api_key.txt
