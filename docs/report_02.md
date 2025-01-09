@@ -16,6 +16,10 @@ Most of the changes in the tokenization and indexing process are related to impr
 
 1. The stemming process is now included in the tokenization, to improve the searching algorithm. This was a necessary part for the search engine, because obviously the same words with different endings have the same meaning and must be calculated in the initial score.
 
+<p align="center">
+  <img src="stemming.png"  width="225" height="225" />
+</p>
+
 2. 2-grams and 3-grams (over words) are now also included in the working dictionary. Such a technique allows handling cases where not only the individual words in a phrase are important, but the phrase itself is important. For example, "Data Science" - before, had searches over the individual words "data" and "science", but a webpage could contain something like "Data Analytics ... Life Science", and the information would not be as relevant.
 
 3. The scoring formula has been changed to wf-idf(weighted frequency - inverse document frequence) which is commonly used scoring formula in information retrieval, where N is the total number of documents, $df_t$ the frequency of word $t$ in documents, $d$ is target document:
