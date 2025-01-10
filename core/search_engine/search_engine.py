@@ -15,6 +15,7 @@ class SearchEngine:
         asyncio.run(self.crawler.start_crawling())
 
     def get(self, queryText):
+        # change the result to dict later
         return self.searchPipeline.searchDocument(queryText=queryText, topK=20)
 
 
