@@ -16,15 +16,52 @@ This project aims to develop a scalable and efficient web search engine to suppo
 Run rag_query.py script with indexed HKUST webpages in storage.
 
 """
-**Query:**
-Who participated in ICPC EC Final 2023 ?
+QUERY: Who participated in ICPC EC Final 2023 ?
 
-**Answer:**
-Based on the document provided, the members of Team 1 who participated in the ICPC Asia East Continent 
-Final Contest in 2023 are Ka Kit Lui, Sin Hang Yeung, and Tsz Fung Wong. Team 2 also participated in 
-the same contest, consisting of Taimas Korganbayev, Mukhammadarif Sakhmoldin, and Raiymbek Baishuak.
+ANSWER:
+Based on the information provided in the document, Team 1 (Ka Kit Lui, Sin Hang Yeung, Tsz Fung Wong)
+and Team 2 (Taimas Korganbayev, Mukhammadarif Sakhmoldin, Raiymbek Baishuak) participated in the 2023
+ICPC Asia East Continent Final Contest.
+
+SOURCES:
+https://www.cse.ust.hk/News/ACM_ICPC_Asia2023
+https://cse.hkust.edu.hk/News/ACM_ICPC_Asia2023
+http://www.cse.ust.hk/News/ACM_ICPC_Asia2023
+"""
+
+"""
+QUERY: Descirbe DSCT Major from HKUST
+
+ANSWER:
+The Data Science and Technology (DSCT) major at HKUST is a program that offers a comprehensive curriculum
+covering areas such as machine learning, classification, clustering, data mining, database management,
+cloud computing, and data visualization. The program is ranked highly in various fields, including:
+- #32 in Computer Science and Information Systems (No.1 in Hong Kong)
+- #43 in Statistics and Operational Research (No.1 in Hong Kong)
+- #47 in Mathematics (No.1 in Hong Kong)
+Graduates of the DSCT major are in high demand in today's job market, with career opportunities in sectors
+such as IT, engineering, finance, management, sales, and more. Students pursuing an additional major within
+the DSCT program have specific requirements to fulfill, including completing certain math and computer
+science courses with specific grade requirements. The program also offers opportunities for students to
+complete an additional major program with the approval of the relevant major-program coordinators, with
+the first major being the degree associated with the student's transcript.
+
+SOURCES:
+https://dsct.ust.hk/applications
+https://dsct.hkust.edu.hk/applications
+https://dsct.ust.hk/admission-route
+https://dsct.hkust.edu.hk/admission-route
+https://dsct.ust.hk/applications
+https://dsct.hkust.edu.hk/applications
+https://cse.hkust.edu.hk/ug/additional_major
+https://dsct.ust.hk/student-sharing
+https://dsct.hkust.edu.hk/student-sharing
+https://join.ust.hk/our-programs/joint-school-program/data-science-and-technology-seng
+https://join.ust.hk/our-programs/joint-school-program/data-science-and-technology
+https://join.hkust.edu.hk/our-programs/joint-school-program/data-science-and-technology-seng
 """
 ```
+
 
 ## Installation
 

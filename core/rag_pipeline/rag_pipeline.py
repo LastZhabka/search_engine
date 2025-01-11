@@ -14,7 +14,7 @@ def cos(a, b):
 class RAGPipeline:
     def __init__(self,):
         self.model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
-        self.threshold = 0.1
+        self.threshold = 0.5
         self.searchEngine = SearchEngine()
         self.llm_connector = LLMConnector()
 
@@ -41,7 +41,12 @@ class RAGPipeline:
         queryEmbedding = self.model.encode(queryText)
         bestSources = self.getBestSubSources(sources = self.searchEngine.get(queryText), queryEmbedding = queryEmbedding, K = 12)
         prompt = self.preparePrompt(sources=bestSources, queryText=queryText)
+        print(f"QUERY: {queryText}")
         answer = self.llm_connector.complete_text(prompt)
+        print("ANSWER:")
         print(answer)
+        print("SOURCES:")
+        for source in bestSources:
+            print(source[1])
 
                 
