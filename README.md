@@ -10,9 +10,25 @@ This project aims to develop a scalable and efficient web search engine to suppo
 - **[2024.12.27]** The first implementation released.
   [[Technical Report]](docs/report_01.md)
 
-## 🎥 Demo
+## 🎥 Demo video
 
-TODO DEMO
+```python
+""" Run rag_query script.
+**Question:**
+Who participated in ICPC ?(People names)
+
+**Answer:**
+The people who participated in the ICPC (International Collegiate Programming Contest) as 
+mentioned in the documents are:
+
+- Team 1 members: Ka Kit Lui, Sin Hang Yeung, Tsz Fung Wong
+- Team 2 members: Taimas Korganbayev, Mukhammadarif Sakhmoldin, Raiymbek Baishuak
+
+Therefore, the individuals who participated in the ICPC from the document are Ka Kit Lui, 
+Sin Hang Yeung, Tsz Fung Wong, Taimas Korganbayev, Mukhammadarif Sakhmoldin, and Raiymbek 
+Baishuak.
+"""
+```
 
 ## Installation
 

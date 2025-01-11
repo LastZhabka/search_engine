@@ -20,6 +20,7 @@ class Indexer(ABC):
     
     @abstractmethod
     def searchDocument(self, documentInfo, searchSpace = None, topK = 50, docsCount = 0):
+        """ returns dict """ 
         pass
 
 class SemanticIndexer(Indexer):
@@ -50,7 +51,8 @@ class SemanticIndexer(Indexer):
             urls.append(url)
             embeddings.append(embedding)
             texts.append(text)
-        return urls, embeddings, texts
+        result = {"urls" : urls, "texts" : texts, "vectors" : embeddings}
+        return result
 
 class WordIndexer(Indexer):
     def __init__(self,):
@@ -77,5 +79,6 @@ class WordIndexer(Indexer):
                 for url, frequency in docs_with_word:
                     docs[url] += wordIDF * (1 + np.log(frequency))
                     #docs[url] += 1 - np.power(8.0, -frequency)
-        return [item[0] for item in sorted(docs.items(), key = lambda x: x[1], reverse=True)[0:topK]]
+        result = {"urls" : [item[0] for item in sorted(docs.items(), key = lambda x: x[1], reverse=True)[0:topK]]}
+        return result
     

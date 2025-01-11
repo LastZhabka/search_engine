@@ -21,7 +21,7 @@ class RAGPipeline:
 
     def getBestSubSources(self, sources, queryEmbedding, K = 12):
         result = []
-        for url, embedding, text in sources:
+        for url, embedding, text in zip(sources["urls"], sources["vectors"], sources["texts"]):
             for subEmbedding, subText in zip(embedding, text):
                 similarity = cos(queryEmbedding, np.array(subEmbedding))
                 if similarity > self.threshold:
@@ -39,13 +39,9 @@ class RAGPipeline:
 
     def ask(self, queryText):
         queryEmbedding = self.model.encode(queryText)
-        sources = self.getBestSubSources(sources = self.searchEngine.get(queryText), queryEmbedding = queryEmbedding, K = 12)
-        prompt = self.preparePrompt(sources=sources, queryText=queryText)
+        bestSources = self.getBestSubSources(sources = self.searchEngine.get(queryText), queryEmbedding = queryEmbedding, K = 12)
+        prompt = self.preparePrompt(sources=bestSources, queryText=queryText)
         answer = self.llm_connector.complete_text(prompt)
         print(answer)
 
                 
-x = RAGPipeline()
-#print(x.searchEngine.get("icpc"))
-#x = RAGPipeline()
-x.ask("Who participated in ICPC ?(People names)")

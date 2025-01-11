@@ -4,7 +4,7 @@ from openai import AzureOpenAI
 class LLMConnector:
     def __init__(self,):
         self.client = AzureOpenAI(
-            api_key=open("api_key.txt", "r").read(),
+            api_key=open("core/rag_pipeline/llm_connector/api_key.txt", "r").read(),
             api_version="2024-10-21",
             azure_endpoint="https://hkust.azure-api.net"
         )
