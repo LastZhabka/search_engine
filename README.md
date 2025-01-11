@@ -10,23 +10,17 @@ This project aims to develop a scalable and efficient web search engine to suppo
 - **[2024.12.27]** The first implementation released.
   [[Technical Report]](docs/report_01.md)
 
-## 🎥 Demo video
+## 🎥 ~Demo video~ RAG Q & A Example
 
 ```python
-""" Run rag_query script.
-**Question:**
-Who participated in ICPC ?(People names)
+Run rag_query.py script with indexed HKUST webpages in storage.
+
+"""
+**Query:**
+Who participated in ICPC EC Final 2023 ?
 
 **Answer:**
-The people who participated in the ICPC (International Collegiate Programming Contest) as 
-mentioned in the documents are:
-
-- Team 1 members: Ka Kit Lui, Sin Hang Yeung, Tsz Fung Wong
-- Team 2 members: Taimas Korganbayev, Mukhammadarif Sakhmoldin, Raiymbek Baishuak
-
-Therefore, the individuals who participated in the ICPC from the document are Ka Kit Lui, 
-Sin Hang Yeung, Tsz Fung Wong, Taimas Korganbayev, Mukhammadarif Sakhmoldin, and Raiymbek 
-Baishuak.
+Based on the document provided, the members of Team 1 who participated in the ICPC Asia East Continent Final Contest in 2023 are Ka Kit Lui, Sin Hang Yeung, and Tsz Fung Wong. Team 2 also participated in the same contest, consisting of Taimas Korganbayev, Mukhammadarif Sakhmoldin, and Raiymbek Baishuak.
 """
 ```
 
